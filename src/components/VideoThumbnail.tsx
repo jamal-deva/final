@@ -151,7 +151,6 @@ export function VideoThumbnail({
           }`}
           loop={isShowreel}
           playsInline
-          muted
           preload="none"
           onLoadedData={() => {
             console.log('Video loaded data');
