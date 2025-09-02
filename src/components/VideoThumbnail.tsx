@@ -70,39 +70,19 @@ export function VideoThumbnail({
       videoRef.current.pause();
       setIsPlaying(false);
     } else {
-      setIsLoading(true);
-      
-      // Always set the source and load
-      videoRef.current.src = src;
-      videoRef.current.load();
+      if (!videoLoaded) {
+        setIsLoading(true);
+        // Only load the video source if it hasn't been loaded yet
+        videoRef.current.src = src;
+        videoRef.current.load();
+      }
       
       try {
-        // Wait for the video to be ready to play
-        await new Promise((resolve, reject) => {
-          const onCanPlay = () => {
-            videoRef.current?.removeEventListener('canplay', onCanPlay);
-            videoRef.current?.removeEventListener('error', onError);
-            resolve(void 0);
-          };
-          
-          const onError = () => {
-            videoRef.current?.removeEventListener('canplay', onCanPlay);
-            videoRef.current?.removeEventListener('error', onError);
-            reject(new Error('Video failed to load'));
-          };
-          
-          videoRef.current?.addEventListener('canplay', onCanPlay);
-          videoRef.current?.addEventListener('error', onError);
-        });
-        
         await videoRef.current.play();
         setIsPlaying(true);
-        setVideoLoaded(true);
-        setIsLoading(false);
       } catch (error) {
         console.error('Error playing video:', error);
         setIsLoading(false);
-        setIsPlaying(false);
       }
     }
   };
@@ -150,7 +130,7 @@ export function VideoThumbnail({
           className={`absolute inset-0 w-full h-full ${
             isFullscreen ? 'object-contain' : 'object-cover'
           } transition-opacity duration-300 ${
-            isPlaying && videoLoaded ? 'opacity-0' : 'opacity-100'
+            videoLoaded ? 'opacity-0' : 'opacity-100'
           }`}
           onLoad={() => setThumbnailLoaded(true)}
           onError={() => {
@@ -167,7 +147,7 @@ export function VideoThumbnail({
           className={`absolute inset-0 w-full h-full ${
             isFullscreen ? 'object-contain' : 'object-cover'
           } transition-opacity duration-300 ${
-            videoLoaded && isPlaying ? 'opacity-100' : 'opacity-0'
+            videoLoaded ? 'opacity-100' : 'opacity-0'
           }`}
           loop={isShowreel}
           playsInline
