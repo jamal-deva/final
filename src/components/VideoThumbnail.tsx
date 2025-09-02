@@ -130,7 +130,7 @@ export function VideoThumbnail({
           className={`absolute inset-0 w-full h-full ${
             isFullscreen ? 'object-contain' : 'object-cover'
           } transition-opacity duration-300 ${
-            videoLoaded ? 'opacity-0' : 'opacity-100'
+            isPlaying ? 'opacity-0' : 'opacity-100'
           }`}
           onLoad={() => setThumbnailLoaded(true)}
           onError={() => {
@@ -147,19 +147,19 @@ export function VideoThumbnail({
           className={`absolute inset-0 w-full h-full ${
             isFullscreen ? 'object-contain' : 'object-cover'
           } transition-opacity duration-300 ${
-            videoLoaded ? 'opacity-100' : 'opacity-0'
+            isPlaying ? 'opacity-100' : 'opacity-0'
           }`}
           loop={isShowreel}
           playsInline
           preload="none"
           onLoadedData={() => {
             console.log('Video loaded data');
+            setVideoLoaded(true);
           }}
           onPlay={() => {
             console.log('Video started playing');
             setIsPlaying(true);
             setIsLoading(false);
-            setVideoLoaded(true);
           }}
           onPause={() => setIsPlaying(false)}
           onEnded={() => setIsPlaying(false)}
